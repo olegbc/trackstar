@@ -24,9 +24,37 @@
  */
 class Issue extends CActiveRecord
 {
+    const TYPE_BUG = 0;
+    const TYPE_FEATURE = 1;
+    const TYPE_TASK = 2;
+
+    const STATUS_NOT_YET_STARTED = 0;
+    const STATUS_STARTED = 1;
+    const STATUS_FINISHED = 2;
+
+    /**
+     * Retrieves a list of issue types
+     * @return array an array of available issue types.
+     */
+    public function getTypeOptions()
+    {
+        return array(
+            self::TYPE_BUG=>'Bug',
+            self::TYPE_FEATURE=>'Feature',
+            self::TYPE_TASK=>'Task',
+        );
+    }
+
+    public function getStatusOptions()
+    {
+        return array(
+            self::STATUS_NOT_YET_STARTED=>'Not yet started',
+            self::STATUS_STARTED=>'Started',
+            self::STATUS_FINISHED=>'Finished',
+        );
+    }
 	/**
-	 * @return string the associated database table name
-	 */
+	 * @return string the associated database table name */
 	public function tableName()
 	{
 		return 'tbl_issue';
@@ -41,7 +69,8 @@ class Issue extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
-			array('project_id, type_id, status_id, owner_id, requester_id, create_user_id, update_user_id', 'numerical', 'integerOnly'=>true),
+			array('project_id, status_id, owner_id, requester_id, create_user_id, update_user_id', 'numerical', 'integerOnly'=>true),
+            array('type_id','in','range'=>self::getAllowedTypeRange()),
 			array('name', 'length', 'max'=>255),
 			array('description, create_time, update_time', 'safe'),
 			// The following rule is used by search().
@@ -50,6 +79,13 @@ class Issue extends CActiveRecord
 		);
 	}
 
+    public static function getAllowedTypeRange(){
+        return array(
+            self::TYPE_BUG,
+            self::TYPE_FEATURE,
+            self::TYPE_TASK,
+        );
+    }
 	/**
 	 * @return array relational rules.
 	 */
