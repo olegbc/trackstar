@@ -99,6 +99,31 @@ class Issue extends CActiveRecord
 			'project' => array(self::BELONGS_TO, 'Project', 'project_id'),
 		);
 	}
+    public function getShit(){
+        return array(
+            self::TYPE_BUG=>'brown',
+            self::TYPE_FEATURE=>'black',
+            self::TYPE_TASK=>'green',
+        );
+    }
+
+    /**
+     * @return string the status text display for the current issue
+     */
+    public function getStatusText()
+    {
+//        $statusOptions=$this->statusOptions;
+        $statusOptions=$this->statusOptions;
+        return isset($statusOptions[$this->status_id]) ? $statusOptions[$this->status_id] : "unknown status ({$this->status_id})";
+    }
+    /**
+     * @return string the type text display for the current issue
+     */
+    public function getTypeText()
+    {
+        $typeOptions=$this->typeOptions;
+        return isset($typeOptions[$this->type_id]) ? $typeOptions[$this->type_id] : "unknown type ({$this->type_id})";
+    }
 
 	/**
 	 * @return array customized attribute labels (name=>label)

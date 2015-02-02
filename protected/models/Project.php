@@ -40,16 +40,16 @@ class Project extends CActiveRecord
 		);
 	}
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+            'issues' => array(self::HAS_MANY, 'Issue', 'project_id'),
+            'users' => array(self::MANY_MANY, 'User', 'tbl_project_user_assignment(project_id, user_id)'),
+        );
+    }
 
 	/**
 	 * @return array customized attribute labels (name=>label)
@@ -86,6 +86,7 @@ class Project extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
+
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('description',$this->description,true);
 		$criteria->compare('create_time',$this->create_time,true);
@@ -108,5 +109,14 @@ class Project extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    /**
+     * @return array of valid users for this project, indexed by user IDs
+     */
+    public function getUserOptions()
+    {
+        $usersArray = CHtml::listData($this->users, 'id', 'username');
+        return $usersArray;
+    }
 }
 
